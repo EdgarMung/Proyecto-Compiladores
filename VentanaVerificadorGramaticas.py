@@ -19,7 +19,7 @@ class Crear_Ventana(tk.Frame):
         tk.Label(self.master, text="RESULTADO :",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 1,row = 1,padx = 5, pady = 5)
         Salida = tk.Entry(self.master,width = 10,background = "white",fg = "black",state="readonly",justify = tk.CENTER)
         Salida.grid(column = 2,row = 1,padx = 5, pady = 5)
-        tk.Button(self.master, text="Calcular", height = 1, width = 5, activebackground = "blue", activeforeground = "White",command = lambda: self.Calcular(Entrada.get(),Salida)).grid(column = 3, row = 0,padx = 5, pady = 5)
+        tk.Button(self.master, text="Calcular", height = 1, width = 5, activebackground = "blue", activeforeground = "White",command = lambda: self.Verificar(Entrada.get(),Salida)).grid(column = 3, row = 0,padx = 5, pady = 5)
         tk.Button(self.master, text="Cerrar" , command = self.master.destroy).grid(column = 1, row = 2,padx = 5, pady = 5)
         
     def Inicializacion(self):
@@ -102,10 +102,11 @@ class Crear_Ventana(tk.Frame):
         AFDD = sim.ir_a()
         self.Objeto = Verificador(AFDD)
 
-    def Calcular(self,cadena,Salida):
+    def Verificar(self,cadena,Salida):
         resultado = self.Objeto.Verificar(cadena)
+        print(resultado)
         Salida.config(state = tk.NORMAL)
-        Salida.delete(0)
+        Salida.delete(0,tk.END)
         if(resultado):
             Salida.insert(tk.END,"True")
         else:
