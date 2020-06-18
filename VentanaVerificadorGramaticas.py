@@ -106,5 +106,8 @@ class Crear_Ventana(tk.Frame):
         resultado = self.Objeto.Verificar(cadena)
         Salida.config(state = tk.NORMAL)
         Salida.delete(0)
-        Salida.insert(tk.END,resultado)
+        if(resultado):
+            Salida.insert(tk.END,"True")
+        else:
+            Salida.insert(tk.END,"False")
         Salida.config(state="readonly")

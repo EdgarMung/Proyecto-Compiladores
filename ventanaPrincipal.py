@@ -1,17 +1,22 @@
 import tkinter as tk
-from ventanaGeneradorAFN import Crear_Ventana
-from ventanaCalculadora import Crear_VentanaCalculadora
+import ventanaGeneradorAFN, ventanaCalculadora, VentanaVerificadorGramaticas
+
+#Funcion Crear VEntana Calculadora
+def abrirVerificador():
+    ventanaSecundaria = tk.Toplevel(ventana)
+    verificador = VentanaVerificadorGramaticas.Crear_Ventana(master=ventanaSecundaria)
+    verificador.widges()
 
 #Funcion Crear VEntana Calculadora
 def abrirCalculadora():
     ventanaSecundaria = tk.Toplevel(ventana)
-    Calculadora = Crear_VentanaCalculadora(master=ventanaSecundaria)
+    Calculadora = ventanaCalculadora.Crear_VentanaCalculadora(master=ventanaSecundaria)
     Calculadora.widges()
 
 #Funcion Crear Ventana Generador AFN  
 def abrirMenuGeneradorAFN():
     ventanaSecundaria = tk.Toplevel(ventana)
-    Menu = Crear_Ventana(master=ventanaSecundaria)
+    Menu = ventanaGeneradorAFN.Crear_Ventana(master=ventanaSecundaria)
     Menu.create_widgets()
 
 #Diseño de la pagina principal de todo el sistema ----------------------------------------------------------------
@@ -27,6 +32,7 @@ parteBotones = tk.Frame(ventana,bg = "blue")
 parteBotones.pack()
 tk.Button(parteBotones,text="Generador AFNś",font =("TSCu_Paranar",15),fg = "black",bg = "white",height = 2,width = 15 ,relief = "solid",activebackground = "cornflower blue",activeforeground = "white" ,bd = 3, command = abrirMenuGeneradorAFN).grid(column = 0, row = 0,pady = 10,padx = 5)
 tk.Button(parteBotones,text="Calculadora",font =("TSCu_Paranar",15),fg = "black" ,bg = "white",height = 2,width = 15 ,relief = "solid",activebackground = "cornflower blue",activeforeground = "white" ,bd = 3, command = abrirCalculadora).grid(column = 1, row = 0,pady = 10,padx = 5)
+tk.Button(parteBotones,text="Analizadores Sintacticos",font =("TSCu_Paranar",15),fg = "black" ,bg = "white",height = 2,width = 30 ,relief = "solid",activebackground = "cornflower blue",activeforeground = "white" ,bd = 3, command = abrirVerificador).grid(columnspan = 2, column = 0, row = 1,pady = 10,padx = 5)
 
 
 ventana.mainloop()

@@ -575,7 +575,11 @@ class Verificador:
         print("G:", end = " ")
         print(self.Lex.cadena)
         if(self.ListaReglas()):
-            return True
+            tupla = self.Lex.getToken()
+            token = tupla[1]
+            print(tupla)
+            if(token == 0):
+                return True
         return False
 
     def ListaReglas(self):
