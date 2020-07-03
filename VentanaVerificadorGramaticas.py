@@ -2,25 +2,26 @@ from Clases import AFN,AFD,Verificador
 from AlgoritmoLexObjeto import Lexico
 import tkinter as tk
 
-class Crear_Ventana(tk.Frame):
+class ventanaVerificadorGramaticas(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.master.geometry("520x150")
+        self.master.geometry("250x350")
         self.master.title("Verificador Gramaticas")
         self.master.config(background = "dodger blue")
         self.Objeto = None
-        self.Inicializacion()
 
     def widges(self):
-        tk.Label(self.master, text="CADENA: ",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 0,row = 0,padx = 5, pady = 5)
-        Entrada = tk.Entry(self.master,width = 40,background = "white",fg = "black",justify = tk.CENTER)
-        Entrada.grid(column = 1,row = 0,columnspan = 2,padx = 5, pady = 5)
-        tk.Label(self.master, text="RESULTADO :",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 1,row = 1,padx = 5, pady = 5)
-        Salida = tk.Entry(self.master,width = 10,background = "white",fg = "black",state="readonly",justify = tk.CENTER)
-        Salida.grid(column = 2,row = 1,padx = 5, pady = 5)
-        tk.Button(self.master, text="Calcular", height = 1, width = 5, activebackground = "blue", activeforeground = "White",command = lambda: self.Verificar(Entrada.get(),Salida)).grid(column = 3, row = 0,padx = 5, pady = 5)
-        tk.Button(self.master, text="Cerrar" , command = self.master.destroy).grid(column = 1, row = 2,padx = 5, pady = 5)
+        tk.Label(self.master, text="GRAMATICA ",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 0,row = 0,padx = 5, pady = 5)
+        #Entrada = tk.Entry(self.master,width = 40,background = "white",fg = "black",justify = tk.CENTER)
+        #Entrada.grid(column = 1,row = 0,columnspan = 2,padx = 5, pady = 5)
+        Entrada = tk.Text(self.master,width = 25,height = 10,background = "white",fg = "black")
+        Entrada.grid(column = 0,row = 1,padx = 23, pady = 5)
+        #tk.Label(self.master, text="RESULTADO :",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 1,row = 1,padx = 5, pady = 5)
+        #Salida = tk.Entry(self.master,width = 10,background = "white",fg = "black",state="readonly",justify = tk.CENTER)
+        #Salida.grid(column = 2,row = 1,padx = 5, pady = 5)
+        tk.Button(self.master, text="Verificar", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = lambda: self.Verificar(Entrada.get(1.0,tk.END))).grid(column = 0, row = 2,padx = 5, pady = 5)
+        tk.Button(self.master, text="Cerrar" , command = self.master.destroy).grid(column = 0, row = 3,padx = 5, pady = 5)
         
     def Inicializacion(self):
         sim = AFN(simbolo = 'A')
@@ -102,13 +103,8 @@ class Crear_Ventana(tk.Frame):
         AFDD = sim.ir_a()
         self.Objeto = Verificador(AFDD)
 
-    def Verificar(self,cadena,Salida):
-        resultado = self.Objeto.Verificar(cadena)
-        print(resultado)
-        Salida.config(state = tk.NORMAL)
-        Salida.delete(0,tk.END)
-        if(resultado):
-            Salida.insert(tk.END,"True")
+    def Verificar(self,cadena):
+        if(self.Objeto.Verificar(cadena.replace("\n",""))):
+            tk.messagebox.showinfo(message="Gramatica Aceptada", title="Info",parent=self.master)  
         else:
-            Salida.insert(tk.END,"False")
-        Salida.config(state="readonly")
+            tk.messagebox.showerror(message="Gramatica Erronea", title="Info",parent=self.master)     

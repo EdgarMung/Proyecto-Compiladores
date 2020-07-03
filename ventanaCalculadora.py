@@ -2,7 +2,7 @@ from Clases import AFN,AFD,Calculadora
 from AlgoritmoLexObjeto import Lexico
 import tkinter as tk
 
-class Crear_VentanaCalculadora(tk.Frame):
+class ventanaCalculadora(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master

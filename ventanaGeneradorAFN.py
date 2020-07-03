@@ -6,7 +6,7 @@ from AlgoritmoLex import AlgoritmoLex
 import FuncionesGeneradorAFN as Fun
 
 # Clase para crear la pantalla **********************************************************************************
-class Crear_Ventana(tk.Frame):
+class ventanaGeneradorAFN(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
