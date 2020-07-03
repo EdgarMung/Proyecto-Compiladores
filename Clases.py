@@ -655,6 +655,132 @@ class Verificador:
             return True
         return False
 
+#----------------------------------------------
+
+class Generador:
+	def __init__(self, AFDD):
+		self.AFD = AFDD
+		self.CONC=10
+		self.UNI=20
+		self.C_P=30
+		self.C_E=40
+		self.S_I=50
+		self.P_I=60
+		self.P_D=70
+		self.SIMB=80
+
+	def Generar(self,cadena):
+		self.Lex=Lexico(cadena,self.AFD)
+		contenedor = []
+		self.E(contenedor)
+		return contenedor[0]
+		
+	def E (self,a):
+		print('funcion E')
+		if (self.T(a)):
+			if(self.Ep(a)):
+				return True
+		return False
+
+	def Ep (self,a):
+		print('funcion Ep')
+		tupla=self.Lex.getToken()
+		print(tupla)
+		token=tupla[1]
+		if token==self.UNI:
+			b=[]
+			if (self.T(b)):
+				print(a[0].alfabeto,'se une con:',b[0].alfabeto)#accion union f con f2
+				a[0].union(b[0])
+				if(self.Ep(a)):
+					return True
+			return False
+		if tupla[0] != "$":
+			print("Se regreso ",tupla[0])
+			self.Lex.rewind(tupla[0])
+		return True
+
+	def T (self,a):
+		print('funcion T')
+		if (self.C(a)):
+			if (self.Tp(a)):
+				return True
+		return False
+
+	def Tp (self,a):
+		print('funcion Tp')
+		tupla=self.Lex.getToken()
+		print(tupla)
+		token=tupla[1]
+		if token == self.CONC:
+			b=[]
+			if (self.C(b)):
+				a[0].concatenacion(b[0])
+				print ("se concatena con")#accion concatenar f con f2
+				if (self.Tp(a)):
+					return True
+			return False
+		if tupla[0] != "$":
+			print("Se regreso ",tupla[0])
+			self.Lex.rewind(tupla[0])
+		return True
+
+	def C (self,a):
+		print('funcion C')
+		if(self.F(a)):
+			if(self.Cp(a)):
+				return True
+		return False
+
+	def Cp (self,a):
+		print('funcion Cp')
+		tupla=self.Lex.getToken()
+		print(tupla)
+		token=tupla[1]
+		if token==self.C_P:
+			#f.cerr_pos()
+			a[0].cerradura_positiva()
+			print('cerradura posistiva')
+			if (self.Cp(a)):
+				return True
+			return False
+		elif token==self.C_E:
+			#f.cerr_k()
+			a[0].cerradura_kleene()
+			print('cerradura estrella')
+			if (self.Cp(a)):
+				return True
+			return False
+		elif token==self.S_I:
+			#f.opc()
+			print('opcional')
+			a[0].interrogacion()
+			if (self.Cp(a)):
+				return True
+			return False
+		if tupla[0] != "$":
+			print("Se regreso ",tupla[0])
+			self.Lex.rewind(tupla[0])
+		return True
+
+	def F (self,a):
+		print('funcion F')
+		tupla=self.Lex.getToken()
+		print(tupla)
+		token=tupla[1]
+		if token==self.P_I:
+			if (self.E(a)):
+				tupla=self.Lex.getToken()
+				print(tupla)
+				token=tupla[1]
+				if (token==self.P_D):
+					return True
+			return False
+		elif token == self.SIMB:
+			a.append(AFN(simbolo=tupla[0]))
+			return True
+		return False
+
 #----------------------------------------------------------------------------------------------------------
 '''
 a=AFN(simbolo='a')
