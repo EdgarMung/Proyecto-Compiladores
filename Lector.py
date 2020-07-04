@@ -9,7 +9,7 @@ class lector:
 		self.procesar_txt()
 	#Procesar el txt para obtener las reglas:
 	def obtener_reglas(self,txt):
-		archivo=open("txt",'r')
+		archivo=open(txt,'r')
 
 		for linea in archivo.readlines():
 			print(linea,end='')
@@ -92,7 +92,7 @@ class lector:
 			self.diccionario.setdefault(li,ld)
 	#Funcion para llamar a las funciones en orden:
 	def procesar_txt(self):
-		self.obtener_reglas('Reglas.txt')
+		self.obtener_reglas('txt')
 		self.obtener_no_terminales()
 		self.obtener_terminales()
 		self.convertir_reglas()
@@ -108,6 +108,8 @@ class lector:
 		for no_terminal in self.lt:
 			d_cod.setdefault(no_terminal,c)
 			c+=1
+
+		d_cod.setdefault('$',-1)
 
 		d_aux=self.diccionario.copy()
 
@@ -132,6 +134,7 @@ class lector:
 		aux=""
 		for p in range(len(cadena)):
 			aux+=cadena[p]
+			#print(aux,s)
 			if aux in self.conjunto_reglas:
 				s.append(self.conjunto_reglas.get(aux))
 				aux=""

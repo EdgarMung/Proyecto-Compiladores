@@ -562,13 +562,22 @@ class Verificador:
     def __init__(self,AFDd):
         #self.Lex = Lexico(cadena,AFD)
         self.AFDD = AFDd
-        self.SIMB = 10
-        self.FLECHA = 20
-        self.PC = 30
-        self.OR = 40
+        self.NoTerminal = 10
+        self.Terminal = 20
+        self.FLECHA = 30
+        self.PC = 40
+        self.OR = 50
+        self.NoTerminales = None
+        self.Terminales = None
+
+    def ObtenerNoterminalesTerminales(self,NoTerm,Term):
+        NoTerm.append(self.NoTerminales)
+        Term.append( self.Terminales)
 
     def Verificar(self,cadena):
         self.Lex = Lexico(cadena,self.AFDD)
+        self.NoTerminales = []
+        self.Terminales = []
         return self.G()
         
     def G(self):
@@ -616,7 +625,8 @@ class Verificador:
         tupla=self.Lex.getToken()
         token = tupla[1]
         print(tupla)
-        if(token == self.SIMB):
+        if(token == self.NoTerminal):
+            self.NoTerminales.append(tupla[0])
             return True
         return False
 
@@ -647,7 +657,10 @@ class Verificador:
         tupla=self.Lex.getToken()
         token = tupla[1]
         print(tupla)
-        if(token == self.SIMB):
+        if(token == self.NoTerminal or token== self.Terminal):
+            if(token == self.Terminal):
+                if(not(tupla[0] in self.Terminales)):
+                    self.Terminales.append(tupla[0])
             self.Lex.GetEstadoLexic(temp)
             if(self.ListaSimb()):
                 return True

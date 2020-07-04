@@ -1,6 +1,5 @@
 from Lector import lector
-#import pdb;
-#pdb.set_trace()
+
 #Clase para crear la tabla LLR0:
 class LLRO:
 	#Constructor de la clase
@@ -12,6 +11,7 @@ class LLRO:
 		self.ln=ln
 		self.dc=dc
 		self.cod=cod
+		self.inv_cod()
 		#print("\nTERMINALES:",self.lt)
 		#print("\nNO TERMINALES:",self.ln)
 		#print("\nDICCIONARIO DE REGLAS:")
@@ -54,10 +54,12 @@ class LLRO:
 	#s = Símbolo para mover()
 	#p_s = posición del símbolo.
 	def mover(self,c,s):
+		#print("moviendo",c,"con",s)
 		c_f=[]
 		for r in c:
 			if s in r:
 				p_s=r.index(s)
+				#print("entro",r.index(0),r.index(s))
 				if r.index(s) > 0 and r.index(0) == r.index(s)-1:
 					c_c=r.copy()
 					p=c_c.index(0)
@@ -68,7 +70,7 @@ class LLRO:
 						c_f.append(c_c)
 					else:
 						c_f.append([])
-		#print("Mover:",c_f)
+		#print("Resultado:",c_f)
 		return(c_f)
 	#Funcion ir_a:
 	def ir_a(self,c,s):
@@ -100,6 +102,9 @@ class LLRO:
 
 						resultado.append(c[p+1])
 		return resultado
+	def inv_cod(self):
+		inv_map = {v: k for k, v in self.cod.items()}
+		self.inv_cod=inv_map
 	#Función para utilizar ir_a en los diferentes conjuntos:
 	#self.pool = donde se guardan todos los conjuntos resultantes i(x)
 	#p = posicion
@@ -120,17 +125,27 @@ class LLRO:
 				c=self.ir_a(self.pool[p],s)
 				if c not in self.pool:
 					self.pool.append(c)
-				#print(p,s,self.pool.index(c))
+				print(p,"\t",self.inv_cod.get(s),"\t",self.pool.index(c))
 				r=(p,s)
 				d_r.setdefault(r,self.pool.index(c))
 			p+=1
 
-		#print("POOL DE CONJUNTOS:")
-		#for conjunto in self.pool:
-		#	print(conjunto)
-		print("DICCIONARIO DE DESPLAZAMIENTO:\n",d_r)
-		#for key in d_r.keys():
-		#	print(key,d_r.get(key))
+		print("POOL DE CONJUNTOS:")
+		for conjunto in self.pool:
+			print("[",end="")
+			for regla in conjunto:
+				print("[",end="")
+				for p in range(len(regla)):
+					if regla[p] == 0:
+						print(".",end="")
+					else:
+						print(self.inv_cod.get(regla[p]), end="")
+				print("]",end="")
+			print("]")
+
+		print("DICCIONARIO DE DESPLAZAMIENTO:")
+		for key in d_r.keys():
+			print("[",key[0],self.inv_cod.get(key[1]),d_r.get(key),"]",end="\t")
 		print("TOTAL",len(d_r))
 		self.diccionario_desplazamiento=d_r
 	#Función para obtener las reglas que necesitan first y follow
@@ -149,12 +164,17 @@ class LLRO:
 				if r[len(r)-1] == 0:
 					r_c=r.copy()
 					r_c.pop()
-					#print(p,l_r.index(r_c),self.follow(d.get(tuple(r_c)),[]))
+					print(p,l_r.index(r_c),end=" ")
+					self.p_lista(self.follow(d.get(tuple(r_c)),[]))
+					print("")
 
 					for simb in self.follow(d.get(tuple(r_c)),[]):
 						dic.setdefault((p,simb),l_r.index(r_c))
 
-		print("DICCIONARIO DE REDUCCIÓN:\n",dic)
+		print("DICCIONARIO DE REDUCCIÓN:\n")
+		for key in dic.keys():
+			print("[",key[0],self.inv_cod.get(key[1]),dic.get(key),"]",end="\t")
+		print("TOTAL",len(dic))
 		print("TOTAL",len(dic))
 		self.diccionario_reduccion=dic
 	#Función que invierte las llaves y los valores del diccionario dc:
@@ -182,16 +202,17 @@ class LLRO:
 		error=0
 
 		while not error:
-			print(pila,l)
+			self.p_operaciones(pila)
+			self.p_lista(l)
 			s=l.pop(0)
 
 			if (pila[-1],s) in self.diccionario_desplazamiento:
-
+				print("DESPLAZAMIENTO",self.diccionario_desplazamiento.get((pila[-1],s)))
 				pila.append(s)
 				pila.append(self.diccionario_desplazamiento.get((pila[-2],s)))
-				print("DESPLAZAMIENT0")
+
 			elif (pila[-1],s) in self.diccionario_reduccion:
-				print("REDUCCION")
+				print("REDUCCION",self.diccionario_reduccion.get((pila[-1],s)))
 				if (pila[-1],s) == (1,-1):
 					print("Cadena aceptada.")
 					return
@@ -213,6 +234,17 @@ class LLRO:
 			else:
 				print("ERROR")
 				return
+	def p_lista(self,l):
+		print("[",end="")
+		for e in l:
+			print(self.inv_cod.get(e),end=" ")
+		print("]",end="")
+	def p_operaciones(self,l):
+
+		print("[",end="")
+		for p in range(0,len(l),2):
+			print(self.inv_cod.get(l[p]),l[p+1],end=" ")
+		print("]",end="")
 
 
 #Menú----------------------------------
@@ -221,5 +253,5 @@ tabla=LLRO(reglas.lt,reglas.ln,reglas.diccionario,reglas.conjunto_reglas)
 print(tabla.cod)
 tabla.crear()
 tabla.reglas()
-r=reglas.convertir_cadena("(num+num-num)*num+num/num$")
+r=reglas.convertir_cadena("(aora)*&a+")
 tabla.evaluar(r)

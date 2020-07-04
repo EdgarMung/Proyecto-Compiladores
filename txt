@@ -1,3 +1,5 @@
-E->E+T|E-T|T
-T->TxF|T/F|F
-F->(E)|num
+G->E
+E->EorT|T
+T->T&C|C
+C->C*|C+|F
+F->(E)|a
