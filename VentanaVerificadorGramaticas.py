@@ -1,14 +1,14 @@
-from Clases import AFN,AFD,Verificador
+from Clases import AFN,AFD,Verificador,AlgoritmoLL
 from AlgoritmoLexObjeto import Lexico
 import tkinter as tk
 from tkinter import messagebox
-import ventanaMenuAnalizadores
+from ventanaAnalisadorSintacticoCadena import ventanaAnalizadorSintactico
 
 class ventanaVerificadorGramaticas(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.master.geometry("250x350")
+        self.master.geometry("300x350")
         self.master.title("Verificador Gramaticas")
         self.master.config(background = "dodger blue")
         self.Objeto = None
@@ -18,12 +18,14 @@ class ventanaVerificadorGramaticas(tk.Frame):
         self.Inicializacion()
 
     def widges(self):
-        tk.Label(self.master, text="GRAMATICA ",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 0,row = 0,padx = 5, pady = 5)
-        Entrada = tk.Text(self.master,width = 25,height = 10,background = "white",fg = "black")
-        Entrada.grid(column = 0,row = 1,padx = 23, pady = 5)
-        tk.Button(self.master, text="Verificar", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = lambda: self.Verificar(Entrada.get(1.0,tk.END))).grid(column = 0, row = 2,padx = 5, pady = 5)
-        tk.Button(self.master, text="Analizadores", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.AbrirAnalizadores).grid(column = 0, row = 3,padx = 5, pady = 5)
-        tk.Button(self.master, text="Cerrar" , command = self.master.destroy).grid(column = 0, row = 4,padx = 5, pady = 5)
+        tk.Label(self.master, text="GRAMATICA ",font = ("Arial Black",12),background = "dodger blue",fg = "black").grid(column = 0,columnspan = 3,row = 0,padx = 5, pady = 5)
+        Entrada = tk.Text(self.master,width = 30,height = 10,background = "white",fg = "black")
+        Entrada.grid(column = 0,columnspan = 3,row = 1,padx = 23, pady = 5)
+        tk.Button(self.master, text="Verificar", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = lambda: self.Verificar(Entrada.get(1.0,tk.END))).grid(column = 1, row = 2,padx = 5, pady = 5)
+        tk.Button(self.master, text="LL(1)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LL1).grid(column = 0, row = 3,padx = 10, pady = 5)
+        tk.Button(self.master, text="LR(0)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LR0).grid(column = 1, row = 3,padx = 10, pady = 5)
+        tk.Button(self.master, text="LR(1)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LR0).grid(column = 2, row = 3,padx = 10, pady = 5)
+        tk.Button(self.master, text="Cerrar" , command = self.master.destroy).grid(column = 1, row = 4,padx = 5, pady = 5)
         
     def Inicializacion(self):
         NoTerminal = AFN(simbolo = 'A')
@@ -127,10 +129,20 @@ class ventanaVerificadorGramaticas(tk.Frame):
         else:
             messagebox.showerror(message="Gramatica Erronea", title="Error",parent=self.master)
 
-#    def AbrirAnalizadores(self):
-#        ventanaSecundaria = tk.Toplevel(self.master)
-#        Menu = ventanaMenuAnalizadores.ventanaMenuAnalizadores(master=ventanaSecundaria,Grama=self.Gramatica)
+    def LL1(self):
+        ConjuntoReglas = self.Gramatica.split(';')
+        ConjuntoReglas.pop()
+        Objeto = AlgoritmoLL(ConjuntoReglas,self.NoTerminales,self.Terminales)
+        ventanaSecundaria = tk.Toplevel(self.master)
+        ventana = ventanaAnalizadorSintactico(ventanaSecundaria,Objeto)
+        ventana.widges()
 
-Ejemplo = ventanaVerificadorGramaticas(tk.Tk())
-Ejemplo.widges()
-Ejemplo.mainloop()
+    def LR0(self):
+        pass
+
+    def LR1(self):
+        pass
+        
+#Ejemplo = ventanaVerificadorGramaticas(tk.Tk())
+#Ejemplo.widges()
+#Ejemplo.mainloop()

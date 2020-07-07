@@ -1,0 +1,6 @@
+,+,-,*,/,(,),num,$
+E,,,,,TEp,,TEp,
+T,,,,,FTp,,FTp,
+F,,,,,(E),,num,
+Ep,+TEp,-TEp,,,,epsilon,,epsilon
+Tp,epsilon,epsilon,*FTp,/FTp,,epsilon,,epsilon

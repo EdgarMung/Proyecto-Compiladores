@@ -41,5 +41,4 @@ tk.Button(parteBotones,text="Generador AFN_Expresion",font =("TSCu_Paranar",15),
 tk.Button(parteBotones,text="Calculadora",font =("TSCu_Paranar",15),fg = "black" ,bg = "white",height = 2,width = 15 ,relief = "solid",activebackground = "cornflower blue",activeforeground = "white" ,bd = 3, command = abrirCalculadora).grid(column = 0, row = 1,pady = 10,padx = 5)
 tk.Button(parteBotones,text="Analizadores Sintacticos",font =("TSCu_Paranar",15),fg = "black" ,bg = "white",height = 2,width = 25 ,relief = "solid",activebackground = "cornflower blue",activeforeground = "white" ,bd = 3, command = abrirVerificador).grid(column = 1, row = 1,pady = 10,padx = 5)
 
-
 ventana.mainloop()
