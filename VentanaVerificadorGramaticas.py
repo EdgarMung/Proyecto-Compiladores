@@ -2,7 +2,11 @@ from Clases import AFN,AFD,Verificador,AlgoritmoLL
 from AlgoritmoLexObjeto import Lexico
 import tkinter as tk
 from tkinter import messagebox
-from ventanaAnalisadorSintacticoCadena import ventanaAnalizadorSintactico
+from ventanaVerificadorLL1 import ventanaLL1
+from ventanaVerificadorLR import ventanaLR
+from Lector import lector
+from LLR0 import LLRO
+from LR1 import LR1
 
 class ventanaVerificadorGramaticas(tk.Frame):
     def __init__(self, master=None):
@@ -24,7 +28,7 @@ class ventanaVerificadorGramaticas(tk.Frame):
         tk.Button(self.master, text="Verificar", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = lambda: self.Verificar(Entrada.get(1.0,tk.END))).grid(column = 1, row = 2,padx = 5, pady = 5)
         tk.Button(self.master, text="LL(1)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LL1).grid(column = 0, row = 3,padx = 10, pady = 5)
         tk.Button(self.master, text="LR(0)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LR0).grid(column = 1, row = 3,padx = 10, pady = 5)
-        tk.Button(self.master, text="LR(1)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LR0).grid(column = 2, row = 3,padx = 10, pady = 5)
+        tk.Button(self.master, text="LR(1)", height = 1, width = 10, activebackground = "blue", activeforeground = "White",command = self.LR1).grid(column = 2, row = 3,padx = 10, pady = 5)
         tk.Button(self.master, text="Cerrar" , command = self.master.destroy).grid(column = 1, row = 4,padx = 5, pady = 5)
         
     def Inicializacion(self):
@@ -134,14 +138,45 @@ class ventanaVerificadorGramaticas(tk.Frame):
         ConjuntoReglas.pop()
         Objeto = AlgoritmoLL(ConjuntoReglas,self.NoTerminales,self.Terminales)
         ventanaSecundaria = tk.Toplevel(self.master)
-        ventana = ventanaAnalizadorSintactico(ventanaSecundaria,Objeto)
+        ventana = ventanaLL1(ventanaSecundaria,Objeto)
         ventana.widges()
 
     def LR0(self):
-        pass
+        ConjuntoReglasAux = self.Gramatica.split(';')
+        ConjuntoReglasAux.pop()
+
+        ConjuntoReglas = []
+
+        for Regla in ConjuntoReglasAux:
+            ConjuntoReglas.append(Regla+'\n')
+
+        reglas=lector(ConjuntoReglas,self.Terminales,self.NoTerminales)
+        tabla=LLRO(reglas.lt,reglas.ln,reglas.diccionario,reglas.conjunto_reglas)
+        print(tabla.cod)
+        tabla.crear()
+        tabla.reglas()
+        tabla.imprimir()
+        ventanaSecundaria = tk.Toplevel(self.master)
+        ventana = ventanaLR (ventanaSecundaria,reglas,tabla)
+        ventana.widges()
 
     def LR1(self):
-        pass
+        ConjuntoReglasAux = self.Gramatica.split(';')
+        ConjuntoReglasAux.pop()
+        ConjuntoReglas = []
+
+        for Regla in ConjuntoReglasAux:
+            ConjuntoReglas.append(Regla+'\n')
+
+        reglas=lector(ConjuntoReglas,self.Terminales,self.NoTerminales)
+        tabla=LR1(reglas.lt,reglas.ln,reglas.diccionario,reglas.conjunto_reglas)
+        print(tabla.cod)
+        tabla.crear()
+        tabla.reglas()
+        tabla.imprimir()
+        ventanaSecundaria = tk.Toplevel(self.master)
+        ventana = ventanaLR (ventanaSecundaria,reglas,tabla)
+        ventana.widges()
         
 #Ejemplo = ventanaVerificadorGramaticas(tk.Tk())
 #Ejemplo.widges()

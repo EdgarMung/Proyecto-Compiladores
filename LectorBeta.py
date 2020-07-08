@@ -1,10 +1,11 @@
 class lector:
+	#Atributos de la clase:
+	conjunto_reglas=[]
+	diccionario={}
+	lt=[] #Lista de terminales.
+	ln=[] #Lista de NO terminales.
 	#Constructor de la clase:
-	def __init__(self,conjunto_reglas,Terminales,NoTerminales):
-		self.diccionario = {}
-		self.conjunto_reglas = conjunto_reglas
-		self.lt = Terminales
-		self.ln = NoTerminales
+	def __init__(self):
 		self.procesar_txt()
 	#Procesar el txt para obtener las reglas:
 	def obtener_reglas(self,txt):
@@ -27,7 +28,7 @@ class lector:
 		for regla in self.conjunto_reglas:
 			posicion=regla.find("->")
 			cad_aux=regla[posicion+2:]
-			cad_aux=cad_aux.replace(" ","")
+			#cad_aux=cad_aux.replace(" ","")
 			cad_aux=cad_aux.replace("\n","")
 			#Quitando uno por uno los terminales:
 			for terminal in self.ln:
@@ -44,6 +45,7 @@ class lector:
 			if elemento.split() != []:
 				nt+=elemento.split()
 
+		nt=list(set(nt))
 		self.lt=nt
 	#Obtener el siguiente pedazo de cadena antes de un símbolo:
 	def obtener_subcadena(self,cadena,simbolo):
@@ -91,9 +93,9 @@ class lector:
 			self.diccionario.setdefault(li,ld)
 	#Funcion para llamar a las funciones en orden:
 	def procesar_txt(self):
-		#self.obtener_reglas('txt')
-		#self.obtener_no_terminales()
-		#self.obtener_terminales()
+		self.obtener_reglas('txt')
+		self.obtener_no_terminales()
+		self.obtener_terminales()
 		self.convertir_reglas()
 		self.conversion_diccionario()
 		self.codigo()

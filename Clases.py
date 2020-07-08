@@ -808,6 +808,7 @@ class AlgoritmoLL():
         self.Columnas = []
         self.Filas = []
         self.tabla = []
+        self.Mayusculas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         self.Inicializacion()
 
     def QuitarRecursividad(self,Regla):
@@ -882,6 +883,7 @@ class AlgoritmoLL():
 
                 if('epsilon' in Aux ):
                     Aux.remove('epsilon')
+                    ListaAux+= Aux
                     if(self.DiccionarioFollow.get(Elemento[0]) == None):
                         ListaAux+= self.Follow(Elemento[0])
                     else:
@@ -941,7 +943,7 @@ class AlgoritmoLL():
 
         for Regla in Reglas:
             for LadoDer in Regla[1]:
-                if(Elemento_Buscado in LadoDer):
+                if((Elemento_Buscado in LadoDer) and LadoDer != 'epsilon'):
                     for Elemento in Regla_Objetivo:
                         if(Regla[0] in Elemento):
                             return Elemento
@@ -1029,7 +1031,7 @@ class AlgoritmoLL():
                                 Aux.pop()
                                 Aux.pop()
                             else:
-                                Pila.append(Aux.pop())
+                                Pila.append(Aux.pop())	
                 else:
                     Accion = 'ERROR'
                     Bandera = False

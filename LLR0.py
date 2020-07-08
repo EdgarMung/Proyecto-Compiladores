@@ -1,4 +1,5 @@
 from Lector import lector
+import csv
 
 #Clase para crear la tabla LLR0:
 class LLRO:
@@ -12,6 +13,8 @@ class LLRO:
 		self.dc=dc
 		self.cod=cod
 		self.inv_cod()
+		self.Columnas = []
+		self.Filas = []
 		#print("\nTERMINALES:",self.lt)
 		#print("\nNO TERMINALES:",self.ln)
 		#print("\nDICCIONARIO DE REGLAS:")
@@ -19,6 +22,61 @@ class LLRO:
 		print("NO TERMINALES:",ln)
 		for key in self.dc.keys():
 			print(key,"\t",self.dc.get(key))
+	
+	#Funcion para imprimir la tabla en csv
+	def imprimir(self):
+		tabla = []
+		self.Columnas +=  self.lt + [-1] + self.ln 
+
+		Estados1 = list(self.diccionario_desplazamiento.keys())
+		Estados1Filtradas = []
+		for estado in Estados1:
+			Estados1Filtradas.append(estado[0])
+		Estados2 = list(self.diccionario_reduccion.keys())
+		Estados2Filtradas = []
+		for estado in Estados2:
+			Estados2Filtradas.append(estado[0])
+		EstadoMax1 = max(Estados1Filtradas)
+		EstadoMax2 = max(Estados2Filtradas)
+
+		if(EstadoMax1 > EstadoMax2):
+			for i in range(0,EstadoMax1 + 1):
+				self.Filas.append(i)
+		else:
+			for i in range(0,EstadoMax2 + 1):
+				self.Filas.append(i)
+		
+		for Fila in range(0,len(self.Filas)):
+			Aux = []
+			for Columna in range(0,len(self.Columnas)):
+				Aux.append("")
+			tabla.append(Aux)
+
+		Desplazamientos = list(self.diccionario_desplazamiento.items())
+		Reducciones = list(self.diccionario_reduccion.items())
+
+		for Desplazamiento in Desplazamientos:
+			Columna = self.Columnas.index(Desplazamiento[0][1])
+			Fila = self.Filas.index(Desplazamiento[0][0])
+			tabla[Fila][Columna] = 'D' + str(Desplazamiento[1])
+
+		for Reduccion in Reducciones:
+			Columna = self.Columnas.index(Reduccion[0][1])
+			Fila = self.Filas.index(Reduccion[0][0])
+			tabla[Fila][Columna] = 'R' + str(Reduccion[1])
+		
+		with open('TablaLR0.csv', 'w', newline='') as csvfile:
+			writer = csv.writer(csvfile, delimiter=',')
+			Aux = [""]
+			for Elemento in self.Columnas:
+				Aux.append(self.inv_cod.get(Elemento))
+		
+			writer.writerow(Aux)
+
+			for Elemento in self.Filas:
+				writer.writerow([Elemento]+tabla[Elemento])
+		print("Tabla imprimida")
+		
 	#Función para crear las cerraduras:
 	#C_E = Conjunto de reglas externo a la función.
 	def cerradura(self,c_e):
@@ -193,7 +251,7 @@ class LLRO:
 				l_r.append(l)
 		return l_r
 	#Función para evaluar la cadena:
-	def evaluar(self,l):
+	def evaluar(self,l,Solucion):
 		print("CADENA",l)
 		reglas=self.val_list()
 		busqueda=self.inv_dc()
@@ -202,19 +260,26 @@ class LLRO:
 		error=0
 
 		while not error:
-			self.p_operaciones(pila)
-			self.p_lista(l)
+			cadena = ""
+			cadena += self.p_operaciones(pila)
+			cadena += self.p_lista(l)
 			s=l.pop(0)
 
 			if (pila[-1],s) in self.diccionario_desplazamiento:
 				print("DESPLAZAMIENTO",self.diccionario_desplazamiento.get((pila[-1],s)))
+				cadena+= "  |  DESPLAZAMIENTO "
+				cadena+= str(self.diccionario_desplazamiento.get((pila[-1],s)))
 				pila.append(s)
 				pila.append(self.diccionario_desplazamiento.get((pila[-2],s)))
 
 			elif (pila[-1],s) in self.diccionario_reduccion:
 				print("REDUCCION",self.diccionario_reduccion.get((pila[-1],s)))
+				cadena+= "  |  REDUCCION "
+				cadena+= str(self.diccionario_desplazamiento.get((pila[-1],s)))
 				if (pila[-1],s) == (1,-1):
 					print("Cadena aceptada.")
+					cadena+= "  |  Cadena aceptada."
+					Solucion.append(cadena)
 					return
 				pos=self.diccionario_reduccion.get((pila[-1],s))
 				cardinalidad=len(reglas[pos])*2
@@ -233,25 +298,44 @@ class LLRO:
 				l.insert(0,s)
 			else:
 				print("ERROR")
+				cadena+= "  |  ERROR"
+				Solucion.append(cadena)
 				return
+		
+			Solucion.append(cadena)
+		
 	def p_lista(self,l):
-		print("[",end="")
+		cadenaAux = "" 
+		print("[ ",end="")
+		cadenaAux+= "  |  ["
 		for e in l:
 			print(self.inv_cod.get(e),end=" ")
+			cadenaAux+= self.inv_cod.get(e)+" "
 		print("]",end="")
-	def p_operaciones(self,l):
+		cadenaAux+= "]"
 
-		print("[",end="")
+		return cadenaAux
+
+	def p_operaciones(self,l):
+		cadenaAux = "" 
+		print("[ ",end="")
+		cadenaAux+= "["
 		for p in range(0,len(l),2):
 			print(self.inv_cod.get(l[p]),l[p+1],end=" ")
+			cadenaAux+= self.inv_cod.get(l[p])+" "+str(l[p+1])+" "
 		print("]",end="")
+		cadenaAux += "]"
+
+		return cadenaAux
+
 
 
 #Menú----------------------------------
-reglas=lector()
-tabla=LLRO(reglas.lt,reglas.ln,reglas.diccionario,reglas.conjunto_reglas)
-print(tabla.cod)
-tabla.crear()
-tabla.reglas()
-r=reglas.convertir_cadena("(aora)*&a+")
-tabla.evaluar(r)
+#reglas=lector(['G->E\n','E->EorT|T\n','T->TgradoC|C\n','C->C+|C*|C?|F\n','F->(E)|s\n'],['or', 'grado', '+', '*', '?', '(', ')', 's'],['G', 'E', 'T', 'C', 'F'])
+#tabla=LLRO(reglas.lt,reglas.ln,reglas.diccionario,reglas.conjunto_reglas)
+#print(tabla.cod)
+#tabla.crear() #Se Crean los despalazamientos
+#tabla.reglas() #Se Crean las Reducciones
+#tabla.imprimir() # Se crea el csv
+#r=reglas.convertir_cadena("(sors)+grados*grados")
+#tabla.evaluar(r)
