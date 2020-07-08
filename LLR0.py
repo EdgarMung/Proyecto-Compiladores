@@ -275,7 +275,7 @@ class LLRO:
 			elif (pila[-1],s) in self.diccionario_reduccion:
 				print("REDUCCION",self.diccionario_reduccion.get((pila[-1],s)))
 				cadena+= "  |  REDUCCION "
-				cadena+= str(self.diccionario_desplazamiento.get((pila[-1],s)))
+				cadena+= str(self.diccionario_reduccion.get((pila[-1],s)))
 				if (pila[-1],s) == (1,-1):
 					print("Cadena aceptada.")
 					cadena+= "  |  Cadena aceptada."

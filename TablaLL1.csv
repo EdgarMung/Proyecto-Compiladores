@@ -1,8 +1,6 @@
-,o,&,*,+,(,),a,$
+,+,-,*,/,(,),num,$
 E,,,,,TEp,,TEp,
-T,,,,,CTp,,CTp,
-C,,,,,FCp,,FCp,
-F,,,,,(E),,a,
-Ep,oTEp,,,,,epsilon,,epsilon
-Tp,epsilon,&CTp,,,,epsilon,,epsilon
-Cp,epsilon,epsilon,*Cp,+Cp,,epsilon,,epsilon
+T,,,,,FTp,,FTp,
+F,,,,,(E),,num,
+Ep,+TEp,-TEp,,,,epsilon,,epsilon
+Tp,epsilon,epsilon,*FTp,/FTp,,epsilon,,epsilon

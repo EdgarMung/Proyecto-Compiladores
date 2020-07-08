@@ -383,14 +383,12 @@ class Calculadora:
 		self.v2=[]
 	#----------------------------------------------------
 	def ConsultaResultado(self):
-		resultado = str(self.v2[0])
-		self.v2 = []
-		self.contador = 0
-		return resultado
-
+		return str(self.v2[0])
 
 	#----------------------------------------------------
 	def InicioOperaciones(self,cadena):
+		self.v2 = []
+		self.contador = 0
 		self.Lex = Lexico(cadena,self.AFDD)
 		self.E()
 
